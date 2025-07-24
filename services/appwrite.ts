@@ -11,6 +11,7 @@ const client = new Client()
 
 const database = new Databases(client);
 
+//get the trending search to db
 export const updateSearchCount = async (query: string, movie: Movie) => {
   try {
     const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
@@ -43,6 +44,22 @@ export const updateSearchCount = async (query: string, movie: Movie) => {
     throw error;
   }
 };
-//if a document is found increment the searchCount field
-//if no document is found
-//create a new document in Appwrite database -> 1
+
+
+//Show the trending search result
+export const getTrendingMovies = async():Promise<TrendingMovie[] | undefined>=>{
+    try{
+        const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
+      Query.limit(5),
+      Query.orderDesc('count'),
+    ])
+
+    return result.documents as unknown as TrendingMovie[];
+
+    }catch(error){
+        console.log(error);
+        return undefined;
+
+    }
+
+}
